@@ -1,0 +1,33 @@
+import pandas as pd
+include: download.smk 
+
+ccre_df = pd.read_csv('ccre_config.tsv', sep='\t')
+ccre_types = ccre_df.ccre_type.unique().tolist()
+species = ccre_df.species.unique().tolist()
+
+
+rule all:
+    input:
+        expand(config['ccre']['bed'],
+               species=species,
+               ccre_type=ccre_types)
+
+################################################################################
+########################### cCRE download #####################################
+################################################################################
+def get_ccre_link(wc, ccre_df):
+    temp = ccre_df.copy(deep=True)
+    return ccre_df.loc[(ccre_df.species==wc.species)&\
+                       (ccre_df.ccre_type==wc.ccre_type), 'link'].values[0]
+
+rule dl_ccre:
+    params:
+        link = lambda wc:get_ccre_link(wc, ccre_df)
+    output:
+        out = temporary(config['ccre']['bed_gz'])
+
+rule gunzip_ccre:
+    input:
+        gz = config['ccre']['bed_gz']
+    output:
+        out = config['ccre']['bed']
