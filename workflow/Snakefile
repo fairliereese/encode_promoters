@@ -1,5 +1,5 @@
 import pandas as pd
-include: download.smk 
+include: 'download.smk'
 
 ccre_df = pd.read_csv('ccre_config.tsv', sep='\t')
 ccre_types = ccre_df.ccre_type.unique().tolist()
@@ -20,13 +20,13 @@ def get_ccre_link(wc, ccre_df):
     return ccre_df.loc[(ccre_df.species==wc.species)&\
                        (ccre_df.ccre_type==wc.ccre_type), 'link'].values[0]
 
-rule dl_ccre:
+use rule dl as dl_ccre with:
     params:
         link = lambda wc:get_ccre_link(wc, ccre_df)
     output:
         out = temporary(config['ccre']['bed_gz'])
 
-rule gunzip_ccre:
+use rule gunzip as gunzip_ccre with:
     input:
         gz = config['ccre']['bed_gz']
     output:
