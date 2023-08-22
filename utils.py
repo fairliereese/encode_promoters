@@ -1,3 +1,5 @@
+import pandas as pd
+
 def format_metadata_col(df, col, new_col):
     df[new_col] = df[col].str.lower()
     df[new_col] = df[new_col].str.replace('-', '_')
