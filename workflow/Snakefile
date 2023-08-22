@@ -58,7 +58,7 @@ def get_procap_encid(wc, df):
     rep = wc.pc_rep
     temp = df.loc[(df.biosamp==biosamp)&\
                   (df.biorep==rep)&\
-                  (df['Output type'])==output_type]
+                  (df['Output type']==output_type)]
     return temp['File accession'].values[0]
 
 use rule dl_encid_bed as dl_encid_procap_bed with:
