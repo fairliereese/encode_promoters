@@ -1,19 +1,36 @@
 import pandas as pd
-include: 'download.smk'
+import os
+import sys
 
-ccre_df = pd.read_csv('ccre_config.tsv', sep='\t')
+p = os.path.dirname(os.getcwd())
+sys.path.append(p)
+
+from utils import *
+
+include: 'download.smk'
+configfile: 'workflow/config.yml'
+
+# ccre stuff
+ccre_df = pd.read_csv('workflow/ccre_config.tsv', sep='\t')
 ccre_types = ccre_df.ccre_type.unique().tolist()
 species = ccre_df.species.unique().tolist()
 
+# procap stuff
+procap_meta = process_encode_metadata('workflow/procap_metadata.tsv')
 
 rule all:
     input:
         expand(config['ccre']['bed'],
                species=species,
-               ccre_type=ccre_types)
+               ccre_type=ccre_types),
+        expand(config['procap']['bed'],
+               zip,
+               pc_biosamp=procap_meta.biosamp.tolist(),
+               pc_rep=procap_meta.biorep.tolist(),
+               pc_output=procap_meta['Output type'].tolist())
 
 ################################################################################
-########################### cCRE download #####################################
+########################### cCRE download ######################################
 ################################################################################
 def get_ccre_link(wc, ccre_df):
     temp = ccre_df.copy(deep=True)
@@ -31,3 +48,27 @@ use rule gunzip as gunzip_ccre with:
         gz = config['ccre']['bed_gz']
     output:
         out = config['ccre']['bed']
+
+################################################################################
+########################## ProCap download #####################################
+################################################################################
+def get_procap_encid(wc, df):
+    output_type = wc.pc_output
+    biosamp = wc.pc_biosamp
+    rep = wc.pc_rep
+    temp = df.loc[(df.biosamp==biosamp)&\
+                  (df.biorep==rep)&\
+                  (df['Output type'])==output_type]
+    return temp['File accession'].values[0]
+
+use rule dl_encid_bed as dl_encid_procap_bed with:
+    params:
+        encid = lambda wc:get_procap_encid(wc, procap_meta)
+    output:
+        bed = config['procap']['bed_gz']
+
+use rule gunzip as gunzip_procap with:
+    input:
+        gz = config['procap']['bed_gz']
+    output:
+        out = config['procap']['bed']

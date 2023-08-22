@@ -1,3 +1,7 @@
 ccre:
   bed_gz: data/{species}/ccre/{ccre_type}.bed.gz
   bed: data/{species}/ccre/{ccre_type}.bed
+
+procap:
+  bed_gz: data/human/procap/{pc_biosamp}_{pc_rep}_{pc_output}.bed.gz
+  bed: data/human/procap/{pc_biosamp}_{pc_rep}_{pc_output}.bed
