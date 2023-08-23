@@ -97,10 +97,20 @@ use rule dl as dl_lr_ca with:
     params:
         link = lambda wc:get_lr_link(wc, lr_df, 'ca')
     output:
-        out = temporary(config['lr']['ca'])
+        # out = temporary(config['lr']['ca'])
+        out = config['lr']['ca']
+
 
 use rule dl as dl_lr_meta with:
     params:
         link = lambda wc:get_lr_link(wc, lr_df, 'metadata')
     output:
-        out = temporary(config['lr']['meta'])
+        # out = temporary(config['lr']['meta'])
+        out = config['lr']['meta']
+
+use rule dl as dl_lr_filt_ab with:
+    params:
+        link = lambda wc:get_lr_link(wc, lr_df, 'filt_ab')
+    output:
+        # out = temporary(config['lr']['filt_ab'])
+        out = config['lr']['filt_ab']
