@@ -27,7 +27,7 @@ rule all:
                zip,
                pc_biosamp=procap_meta.biosamp.tolist(),
                pc_rep=procap_meta.biorep.tolist(),
-               pc_output=procap_meta['Output type'].tolist())
+               pc_output=procap_meta['output'].tolist())
 
 ################################################################################
 ########################### cCRE download ######################################
@@ -55,10 +55,10 @@ use rule gunzip as gunzip_ccre with:
 def get_procap_encid(wc, df):
     output_type = wc.pc_output
     biosamp = wc.pc_biosamp
-    rep = wc.pc_rep
+    rep = int(wc.pc_rep)
     temp = df.loc[(df.biosamp==biosamp)&\
                   (df.biorep==rep)&\
-                  (df['Output type']==output_type)]
+                  (df['output']==output_type)]
     return temp['File accession'].values[0]
 
 use rule dl_encid_bed as dl_encid_procap_bed with:

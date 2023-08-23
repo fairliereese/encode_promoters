@@ -12,11 +12,12 @@ def process_encode_metadata(fname):
        'Biological replicate(s)', 'Technical replicate(s)']
     df = df[cols]
     df = format_metadata_col(df, 'Biosample term name', 'biosamp')
+    df = format_metadata_col(df, 'Output type', 'output')
 
     # get biorep number for each experiment
     keep_cols = ['Experiment accession', 'biosamp']
-    output_type_keep = df['Output type'].unique().tolist()[0]
-    temp = df.loc[df['Output type'] == output_type_keep][keep_cols].copy(deep=True)
+    output_type_keep = df['output'].unique().tolist()[0]
+    temp = df.loc[df['output'] == output_type_keep][keep_cols].copy(deep=True)
     temp['biorep'] = temp[keep_cols].groupby('biosamp').cumcount()+1
     temp.drop('biosamp', axis=1, inplace=True)
 
