@@ -1,0 +1,5 @@
+link	output_type	species
+https://www.encodeproject.org/files/ENCFF139BZG/@@download/ENCFF139BZG.h5	ca	human
+https://raw.githubusercontent.com/fairliereese/paper_rnawg/master/figures/ref/human/lr_human_library_data_summary.tsv	metadata	human
+https://www.encodeproject.org/files/ENCFF999KXH/@@download/ENCFF999KXH.h5	ca	mouse
+https://raw.githubusercontent.com/fairliereese/paper_rnawg/master/figures/ref/mouse/lr_mouse_library_data_summary.tsv	metadata	mouse

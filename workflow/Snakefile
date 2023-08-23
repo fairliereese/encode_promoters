@@ -18,9 +18,12 @@ species = ccre_df.species.unique().tolist()
 # procap stuff
 procap_meta = process_encode_metadata('workflow/procap_metadata.tsv')
 
+# lr stuff
+lr_df = pd.read_csv('workflow/lr_config.tsv', sep='\t')
+
 wildcard_constraints:
     pc_biosamp='|'.join([re.escape(x) for x in procap_meta.biosamp.tolist()]),
-    pc_rep='|'.join([re.escape(x) for x in procap_meta.biorep.tolist()]),
+    pc_rep='|'.join([re.escape(x) for x in procap_meta.biorep.astype(str).tolist()]),
     pc_output='|'.join([re.escape(x) for x in procap_meta.output.tolist()]),
 
 rule all:
@@ -32,7 +35,11 @@ rule all:
                zip,
                pc_biosamp=procap_meta.biosamp.tolist(),
                pc_rep=procap_meta.biorep.tolist(),
-               pc_output=procap_meta.output.tolist())
+               pc_output=procap_meta.output.tolist()),
+        expand(config['lr']['ca'],
+               species=species),
+        expand(config['lr']['meta'],
+               species=species)
 
 ################################################################################
 ########################### cCRE download ######################################
@@ -77,3 +84,23 @@ use rule gunzip as gunzip_procap with:
         gz = config['procap']['bed_gz']
     output:
         out = config['procap']['bed']
+
+################################################################################
+########################## LR TSS download #####################################
+################################################################################
+def get_lr_link(wc, df, type):
+    temp = df.copy(deep=True)
+    return df.loc[(df.species==wc.species)&\
+                  (df.output_type==type), 'link'].values[0]
+
+use rule dl as dl_lr_ca with:
+    params:
+        link = lambda wc:get_lr_link(wc, lr_df, 'ca')
+    output:
+        out = temporary(config['lr']['ca'])
+
+use rule dl as dl_lr_meta with:
+    params:
+        link = lambda wc:get_lr_link(wc, lr_df, 'metadata')
+    output:
+        out = temporary(config['lr']['meta'])
