@@ -18,6 +18,11 @@ species = ccre_df.species.unique().tolist()
 # procap stuff
 procap_meta = process_encode_metadata('workflow/procap_metadata.tsv')
 
+wildcard_constraints:
+    pc_biosamp='|'.join([re.escape(x) for x in procap_meta.biosamp.tolist()]),
+    pc_rep='|'.join([re.escape(x) for x in procap_meta.biorep.tolist()]),
+    pc_output='|'.join([re.escape(x) for x in procap_meta.output.tolist()]),
+
 rule all:
     input:
         expand(config['ccre']['bed'],
@@ -27,7 +32,7 @@ rule all:
                zip,
                pc_biosamp=procap_meta.biosamp.tolist(),
                pc_rep=procap_meta.biorep.tolist(),
-               pc_output=procap_meta['output'].tolist())
+               pc_output=procap_meta.output.tolist())
 
 ################################################################################
 ########################### cCRE download ######################################
