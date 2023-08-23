@@ -9,3 +9,4 @@ procap:
 lr:
   ca: data/{species}/lr/ca.h5
   meta: data/{species}/lr/metadata.tsv
+  filt_ab: data/{species}/lr/filt_ab.tsv
