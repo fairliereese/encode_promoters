@@ -44,7 +44,11 @@ rule all:
                pc_biosamp=procap_meta.biosamp.tolist(),
                pc_rep=procap_meta.biorep.tolist(),
                pc_output=procap_meta.output.tolist()),
-        expand(config['lr']['det_mat'],
+        expand(expand(config['lr']['bed'],
+               zip,
+               lr_biosamp=lr_meta.biosamp.tolist(),
+               lr_rep=lr_meta.biorep.tolist(),
+               allow_missing=True),
                species='human')
         # expand(config['lr']['ca'],
         #        species=species),
@@ -145,3 +149,19 @@ rule get_lr_det_mat:
                       input.filt_ab,
                       params.min_tpm,
                       output.det_mat)
+
+rule get_lr_bed:
+    input:
+        ca_h5 = config['lr']['ca'],
+        det_mat = config['lr']['det_mat']
+    resources:
+        threads = 2,
+        mem_gb = 16
+    output:
+        bed = config['lr']['bed']
+    run:
+        get_lr_tss(input.ca_h5,
+                   input.det_mat,
+                   wc.lr_biosamp,
+                   wc.lr_biorep,
+                   output.bed)

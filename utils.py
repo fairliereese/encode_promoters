@@ -1,4 +1,5 @@
 import pandas as pd
+import pyranges as pr
 
 def format_metadata_col(df, col, new_col):
     df[new_col] = df[col].str.lower()
@@ -122,3 +123,26 @@ def get_det_table(meta_file,
     df = df.groupby(['biosamp', 'biorep']).max()
 
     df.to_csv(ofile, sep='\t')
+
+def get_lr_tss(ca_h5,
+               det_mat,
+               biosamp,
+               biorep,
+               ofile):
+
+    # get tsss
+    ca = cerberus.read(ca_h5)
+    tss = ca.tss.copy(deep=True)
+
+    # get det info
+    df = pd.read_csv(det_mat, sep='\t')
+    df = df.loc[(df.biosamp==biosamp)&\
+            (df.biorep==biorep)]
+    df = df.drop(['biosamp', 'biorep'], axis=1).transpose()
+    df = df.loc[df[0]==True]
+    tss_ids = df.index.tolist()
+
+    # get bed file of det tsss
+    tss = tss.loc[tss.Name.isin(tss_ids)]
+    tss = pr.PyRanges(tss)
+    tss.to_bed(ofile)

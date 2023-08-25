@@ -13,3 +13,4 @@ lr:
   filt_ab: data/{species}/lr/filt_ab.tsv
 
   det_mat: data/{species}/lr/tss_det_matrix.tsv
+  bed: data/{species}/lr/{lr_biosamp}_{lr_rep}.bed
