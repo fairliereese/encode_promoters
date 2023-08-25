@@ -7,20 +7,20 @@ sys.path.append(p)
 
 from utils import *
 
-include: 'download.smk'
-configfile: 'config.yml'
+include: 'workflow/download.smk'
+configfile: 'workflow/config.yml'
 
 # ccre stuff
 # ccre_df = pd.read_csv('workflow/ccre_config.tsv', sep='\t')
-ccre_df = pd.read_csv('ccre_config.tsv', sep='\t')
+ccre_df = pd.read_csv('workflow/ccre_config.tsv', sep='\t')
 ccre_types = ccre_df.ccre_type.unique().tolist()
 species = ccre_df.species.unique().tolist()
 
 # procap stuff
-procap_meta = process_encode_metadata('procap_metadata.tsv')
+procap_meta = process_encode_metadata('workflow/procap_metadata.tsv')
 
 # lr stuff
-lr_df = pd.read_csv('lr_config.tsv', sep='\t')
+lr_df = pd.read_csv('workflow/lr_config.tsv', sep='\t')
 lr_meta = process_encode_metadata(encode_meta_file)
 
 
