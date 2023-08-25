@@ -6,7 +6,7 @@ def format_metadata_col(df, col, new_col):
     df[new_col] = df[new_col].str.replace(' ', '_')
     return df
 
-def process_encode_metadata(fname, collapse_experiments=True):
+def process_encode_metadata(fname):
     df = pd.read_csv(fname, sep='\t')
     cols = ['Experiment accession', 'Biosample term name', 'File accession', 'Output type',
        'Biological replicate(s)', 'Technical replicate(s)']
@@ -85,7 +85,7 @@ def get_det_table(meta_file,
     meta = pd.read_csv(meta_file, sep='\t')
     meta = meta[['ENCODE_experiment_id', 'dataset']].rename({'ENCODE_experiment_id': 'Experiment accession'}, axis=1)
 
-    enc_meta = process_encode_metadata(encode_meta_file)
+    enc_meta = process_encode_metadata(enc_meta_file)
     enc_meta = enc_meta[['Experiment accession', 'biosamp', 'biorep']].drop_duplicates()
 
     meta = meta.merge(enc_meta, how='left', on='Experiment accession')
