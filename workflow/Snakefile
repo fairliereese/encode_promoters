@@ -8,18 +8,21 @@ sys.path.append(p)
 from utils import *
 
 include: 'download.smk'
-configfile: 'workflow/config.yml'
+configfile: 'config.yml'
 
 # ccre stuff
-ccre_df = pd.read_csv('workflow/ccre_config.tsv', sep='\t')
+# ccre_df = pd.read_csv('workflow/ccre_config.tsv', sep='\t')
+ccre_df = pd.read_csv('ccre_config.tsv', sep='\t')
 ccre_types = ccre_df.ccre_type.unique().tolist()
 species = ccre_df.species.unique().tolist()
 
 # procap stuff
-procap_meta = process_encode_metadata('workflow/procap_metadata.tsv')
+procap_meta = process_encode_metadata('procap_metadata.tsv')
 
 # lr stuff
-lr_df = pd.read_csv('workflow/lr_config.tsv', sep='\t')
+lr_df = pd.read_csv('lr_config.tsv', sep='\t')
+lr_meta = process_encode_metadata(encode_meta_file)
+
 
 wildcard_constraints:
     pc_biosamp='|'.join([re.escape(x) for x in procap_meta.biosamp.tolist()]),
@@ -39,7 +42,9 @@ rule all:
         expand(config['lr']['ca'],
                species=species),
         expand(config['lr']['meta'],
-               species=species)
+               species=species),
+        expand(config['lr']['filt_ab'],
+              species=species)
 
 ################################################################################
 ########################### cCRE download ######################################
@@ -86,7 +91,7 @@ use rule gunzip as gunzip_procap with:
         out = config['procap']['bed']
 
 ################################################################################
-########################## LR TSS download #####################################
+####################### LR TSS download / proc #################################
 ################################################################################
 def get_lr_link(wc, df, type):
     temp = df.copy(deep=True)
@@ -114,3 +119,22 @@ use rule dl as dl_lr_filt_ab with:
     output:
         # out = temporary(config['lr']['filt_ab'])
         out = config['lr']['filt_ab']
+
+rule get_lr_det_mat:
+    input:
+        meta = config['lr']['meta'],
+        enc_meta = config['lr']['encode_meta'],
+        filt_ab = config['lr']['filt_ab']
+    resources:
+        threads = 4,
+        mem_gb = 16
+    params:
+        min_tpm = 1
+    output:
+        det_mat = confi['lr']['det_mat']
+    run:
+        get_det_table(input.meta,
+                      input.enc_meta,
+                      input.filt_ab,
+                      params.min_tpm,
+                      output.ofile)

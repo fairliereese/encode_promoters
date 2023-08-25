@@ -9,4 +9,7 @@ procap:
 lr:
   ca: data/{species}/lr/ca.h5
   meta: data/{species}/lr/metadata.tsv
+  encode_meta: data/{species}/lr/encode_metadata.tsv
   filt_ab: data/{species}/lr/filt_ab.tsv
+
+  det_mat: data/{species}/lr/tss_det_matrix.tsv
