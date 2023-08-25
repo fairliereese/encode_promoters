@@ -12,6 +12,7 @@ def process_encode_metadata(fname, collapse_experiments=True):
        'Biological replicate(s)', 'Technical replicate(s)']
     df = df[cols]
     df = format_metadata_col(df, 'Biosample term name', 'biosamp')
+    df = format_metadata_col(df, 'Output type', 'output')
 
     # get biorep number for each experiment
     keep_cols = ['Experiment accession', 'biosamp']

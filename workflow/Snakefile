@@ -2,12 +2,17 @@ import pandas as pd
 import os
 import sys
 
-p = os.path.dirname(os.getcwd())
+# p = os.path.dirname(os.getcwd())
+# sys.path.append(p)
+# print(p)
+
+p = os.getcwd()
 sys.path.append(p)
+print(p)
 
 from utils import *
 
-include: 'workflow/download.smk'
+include: 'download.smk'
 configfile: 'workflow/config.yml'
 
 # ccre stuff
@@ -21,7 +26,7 @@ procap_meta = process_encode_metadata('workflow/procap_metadata.tsv')
 
 # lr stuff
 lr_df = pd.read_csv('workflow/lr_config.tsv', sep='\t')
-lr_meta = process_encode_metadata(encode_meta_file)
+lr_meta = process_encode_metadata(expand(config['lr']['encode_meta'], species='human')[0])
 
 
 wildcard_constraints:
@@ -39,12 +44,14 @@ rule all:
                pc_biosamp=procap_meta.biosamp.tolist(),
                pc_rep=procap_meta.biorep.tolist(),
                pc_output=procap_meta.output.tolist()),
-        expand(config['lr']['ca'],
-               species=species),
-        expand(config['lr']['meta'],
-               species=species),
-        expand(config['lr']['filt_ab'],
-              species=species)
+        expand(config['lr']['det_mat'],
+               species='human')
+        # expand(config['lr']['ca'],
+        #        species=species),
+        # expand(config['lr']['meta'],
+        #        species=species),
+        # expand(config['lr']['filt_ab'],
+        #       species=species)
 
 ################################################################################
 ########################### cCRE download ######################################
@@ -131,10 +138,10 @@ rule get_lr_det_mat:
     params:
         min_tpm = 1
     output:
-        det_mat = confi['lr']['det_mat']
+        det_mat = config['lr']['det_mat']
     run:
         get_det_table(input.meta,
                       input.enc_meta,
                       input.filt_ab,
                       params.min_tpm,
-                      output.ofile)
+                      output.det_mat)
