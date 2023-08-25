@@ -105,7 +105,7 @@ def get_det_table(meta_file,
          'transcript_novelty', 'ISM_subtype']
     df.drop(drop_cols, axis=1, inplace=True)
     df = df.reset_index()
-    df = df.groupby('tss').sum
+    df = df.groupby('tss').sum()
 
     # get the tpm
     df = df.transpose()
