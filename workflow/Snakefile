@@ -39,7 +39,7 @@ rule all:
                pc_biosamp=procap_meta.biosamp.tolist(),
                pc_rep=procap_meta.biorep.tolist(),
                pc_output=procap_meta.output.tolist()),
-        expand(expand(config['lr']['bed'],
+        expand(expand(config['lr']['bed_format'],
                zip,
                lr_biosamp=lr_meta.biosamp.tolist(),
                lr_rep=lr_meta.biorep.tolist(),
@@ -102,7 +102,12 @@ rule procap_format:
         df = pd.read_csv(input.bed, sep='\t',
                          header=None,
                          names=['Chromosome', 'Start','End'], usecols=[0,1,2])
-        pr.PyRanges(df).to_bed(output.bed)
+        df['assay'] = 'procap'
+        df['biosample'] = wildcards.pc_biosamp
+        df['rep'] = wildcards.pc_rep
+        df['output'] = wildcards.pc_output
+        df.to_csv(output.bed, index=False, sep='\t')
+        # pr.PyRanges(df).to_bed(output.bed)
 
 ################################################################################
 ####################### LR TSS download / proc #################################
@@ -168,3 +173,21 @@ rule get_lr_bed:
                    wildcards.lr_biosamp,
                    wildcards.lr_rep,
                    output.bed)
+
+rule lr_format:
+   input:
+       bed = config['lr']['bed']
+   resources:
+       mem_gb = 10,
+       threads = 1
+   output:
+       bed = config['lr']['bed_format']
+   run:
+       df = pd.read_csv(input.bed, sep='\t',
+                        header=None,
+                        names=['Chromosome', 'Start','End'], usecols=[0,1,2])
+       df['assay'] = 'ProCap'
+       df['biosample'] = wildcards.lr_biosamp
+       df['rep'] = wildcards.lr_rep
+       df['output'] = np.nan
+       df.to_csv(output.bed, index=False, sep='\t')

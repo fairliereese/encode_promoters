@@ -15,3 +15,4 @@ lr:
 
   det_mat: data/{species}/lr/tss_det_matrix.tsv
   bed: data/{species}/lr/{lr_biosamp}_{lr_rep}.bed
+  bed_format: data/{species}/lr/{lr_biosamp}_{lr_rep}_formatted.bed
