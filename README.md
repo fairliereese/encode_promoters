@@ -10,4 +10,9 @@ snakemake \
     -s workflow/Snakefile \
     -j 60 \
     --latency-wait 120  -n
+
+    snakemake \
+      -s workflow/Snakefile \
+      -j 1 \
+      --latency-wait 120  -n
   ```

@@ -5,6 +5,7 @@ ccre:
 procap:
   bed_gz: data/human/procap/{pc_biosamp}_{pc_rep}_{pc_output}.bed.gz
   bed: data/human/procap/{pc_biosamp}_{pc_rep}_{pc_output}.bed
+  bed_format: data/human/procap/{pc_biosamp}_{pc_rep}_{pc_output}_formatted.bed
 
 lr:
   ca: data/{species}/lr/ca.h5

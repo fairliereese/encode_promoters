@@ -2,13 +2,8 @@ import pandas as pd
 import os
 import sys
 
-# p = os.path.dirname(os.getcwd())
-# sys.path.append(p)
-# print(p)
-
 p = os.getcwd()
 sys.path.append(p)
-print(p)
 
 from utils import *
 
@@ -39,7 +34,7 @@ rule all:
         expand(config['ccre']['bed'],
                species=species,
                ccre_type=ccre_types),
-        expand(config['procap']['bed'],
+        expand(config['procap']['bed_format'],
                zip,
                pc_biosamp=procap_meta.biosamp.tolist(),
                pc_rep=procap_meta.biorep.tolist(),
@@ -50,12 +45,6 @@ rule all:
                lr_rep=lr_meta.biorep.tolist(),
                allow_missing=True),
                species='human')
-        # expand(config['lr']['ca'],
-        #        species=species),
-        # expand(config['lr']['meta'],
-        #        species=species),
-        # expand(config['lr']['filt_ab'],
-        #       species=species)
 
 ################################################################################
 ########################### cCRE download ######################################
@@ -100,6 +89,20 @@ use rule gunzip as gunzip_procap with:
         gz = config['procap']['bed_gz']
     output:
         out = config['procap']['bed']
+
+rule procap_format:
+    input:
+        bed = config['procap']['bed']
+    resources:
+        mem_gb = 10,
+        threads = 1
+    output:
+        bed = config['procap']['bed_format']
+    run:
+        df = pd.read_csv(input.bed, sep='\t',
+                         header=None,
+                         names=['Chromosome', 'Start','End'], usecols=[0,1,2])
+        pr.PyRanges(df).to_bed(output.bed)
 
 ################################################################################
 ####################### LR TSS download / proc #################################
@@ -162,6 +165,6 @@ rule get_lr_bed:
     run:
         get_lr_tss(input.ca_h5,
                    input.det_mat,
-                   wc.lr_biosamp,
-                   wc.lr_biorep,
+                   wildcards.lr_biosamp,
+                   wildcards.lr_rep,
                    output.bed)

@@ -1,5 +1,6 @@
 import pandas as pd
 import pyranges as pr
+import cerberus
 
 def format_metadata_col(df, col, new_col):
     df[new_col] = df[col].str.lower()
@@ -136,10 +137,10 @@ def get_lr_tss(ca_h5,
 
     # get det info
     df = pd.read_csv(det_mat, sep='\t')
-    df = df.loc[(df.biosamp==biosamp)&\
-            (df.biorep==biorep)]
+    df = df.loc[(df.biosamp==biosamp)&(df.biorep.astype(int)==int(biorep))]
     df = df.drop(['biosamp', 'biorep'], axis=1).transpose()
-    df = df.loc[df[0]==True]
+    df.columns = ['temp']
+    df = df.loc[df['temp']==True]
     tss_ids = df.index.tolist()
 
     # get bed file of det tsss
