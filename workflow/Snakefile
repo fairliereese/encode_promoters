@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import sys
+import numpy as np
 
 p = os.getcwd()
 sys.path.append(p)
@@ -15,36 +16,41 @@ configfile: 'workflow/config.yml'
 ccre_df = pd.read_csv('workflow/ccre_config.tsv', sep='\t')
 ccre_types = ccre_df.ccre_type.unique().tolist()
 species = ccre_df.species.unique().tolist()
+species = 'human'
 
 # procap stuff
-procap_meta = process_encode_metadata('workflow/procap_metadata.tsv')
+procap_meta = process_encode_metadata(config['procap']['encode_meta'])
 
 # lr stuff
 lr_df = pd.read_csv('workflow/lr_config.tsv', sep='\t')
 lr_meta = process_encode_metadata(expand(config['lr']['encode_meta'], species='human')[0])
 
-
 wildcard_constraints:
     pc_biosamp='|'.join([re.escape(x) for x in procap_meta.biosamp.tolist()]),
     pc_rep='|'.join([re.escape(x) for x in procap_meta.biorep.astype(str).tolist()]),
     pc_output='|'.join([re.escape(x) for x in procap_meta.output.tolist()]),
+    lr_biosamp='|'.join([re.escape(x) for x in lr_meta.biosamp.tolist()]),
+    lr_rep='|'.join([re.escape(x) for x in lr_meta.biorep.astype(str).tolist()]),
 
 rule all:
     input:
         expand(config['ccre']['bed'],
                species=species,
                ccre_type=ccre_types),
-        expand(config['procap']['bed_format'],
-               zip,
-               pc_biosamp=procap_meta.biosamp.tolist(),
-               pc_rep=procap_meta.biorep.tolist(),
-               pc_output=procap_meta.output.tolist()),
-        expand(expand(config['lr']['bed_format'],
-               zip,
-               lr_biosamp=lr_meta.biosamp.tolist(),
-               lr_rep=lr_meta.biorep.tolist(),
-               allow_missing=True),
-               species='human')
+        # expand(config['ccre']['bed'],
+        #        species=species,
+        #        ccre_type=ccre_types),
+        # expand(config['procap']['bed_format'],
+        #        zip,
+        #        pc_biosamp=procap_meta.biosamp.tolist(),
+        #        pc_rep=procap_meta.biorep.tolist(),
+        #        pc_output=procap_meta.output.tolist()),
+        # expand(expand(config['lr']['bed_format'],
+        #        zip,
+        #        lr_biosamp=lr_meta.biosamp.tolist(),
+        #        lr_rep=lr_meta.biorep.tolist(),
+        #        allow_missing=True),
+        #        species='human')
 
 ################################################################################
 ########################### cCRE download ######################################
@@ -186,8 +192,40 @@ rule lr_format:
        df = pd.read_csv(input.bed, sep='\t',
                         header=None,
                         names=['Chromosome', 'Start','End'], usecols=[0,1,2])
-       df['assay'] = 'ProCap'
+       df['assay'] = 'lr'
        df['biosample'] = wildcards.lr_biosamp
        df['rep'] = wildcards.lr_rep
        df['output'] = np.nan
        df.to_csv(output.bed, index=False, sep='\t')
+
+################################################################################
+########################### cCRE intersect #####################################
+################################################################################
+def get_bed_files(wc):
+    pc_files = expand(config['procap']['bed_format'],
+           zip,
+           pc_biosamp=procap_meta.biosamp.tolist(),
+           pc_rep=procap_meta.biorep.tolist(),
+           pc_output=procap_meta.output.tolist())
+    lr_files = expand(expand(config['lr']['bed_format'],
+           zip,
+           lr_biosamp=lr_meta.biosamp.tolist(),
+           lr_rep=lr_meta.biorep.tolist(),
+           allow_missing=True),
+           species=wc.species)
+    files = pc_files+lr_files
+    return files
+
+rule ccre_intersect:
+    input:
+        ccre = config['ccre']['bed'],
+        files = lambda wc:get_bed_files(wc)
+    resources:
+        mem_gb = 32,
+        threads = 4
+    output:
+        out = config['ccre']['intersect']
+    run:
+        intersect_ccre(input.ccre,
+                       input.files,
+                       output.out)
