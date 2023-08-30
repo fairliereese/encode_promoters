@@ -26,7 +26,11 @@ lr_df = pd.read_csv('workflow/lr_config.tsv', sep='\t')
 lr_meta = process_encode_metadata(expand(config['lr']['encode_meta'], species='human')[0])
 
 # h3k4me3 chip stuff
-h3_df = process_encode_metadata(config['h3k4me3']['encode_meta'])
+h3k4me3_meta = process_encode_metadata(config['h3k4me3']['encode_meta'])
+
+# h3k27ac chip stuff
+h3k27ac_meta = process_encode_metadata(config['h3k27ac']['encode_meta'])
+
 
 wildcard_constraints:
     ccre_type='|'.join([re.escape(x) for x in ccre_types]),
@@ -35,8 +39,10 @@ wildcard_constraints:
     pc_output='|'.join([re.escape(x) for x in procap_meta.output.tolist()]),
     lr_biosamp='|'.join([re.escape(x) for x in lr_meta.biosamp.tolist()]),
     lr_rep='|'.join([re.escape(x) for x in lr_meta.biorep.astype(str).tolist()]),
-    h3_biosamp='|'.join([re.escape(x) for x in h3_meta.biosamp.astype(str).tolist()]),
-
+    h3k4me3_biosamp='|'.join([re.escape(x) for x in h3k4me3_meta.biosamp.astype(str).tolist()]),
+    h3k4me3_rep='|'.join([re.escape(x) for x in h3k4me3_meta.biorep.astype(str).tolist()]),
+    h3k27ac_biosamp='|'.join([re.escape(x) for x in h3k27ac_meta.biosamp.astype(str).tolist()]),
+    h3k27ac_rep='|'.join([re.escape(x) for x in h3k27ac_meta.biorep.astype(str).tolist()]),
 
 rule all:
     input:
@@ -45,7 +51,10 @@ rule all:
                ccre_type=ccre_types),
         expand(config['h3k4me3']['bed'],
                zip,
-               pc_biosamp=h3_df.biosamp.tolist()),
+               h3k4me3_biosamp=h3k4me3_meta.biosamp.tolist()),
+        expand(config['h3k27ac']['bed'],
+               zip,
+               h3k27ac_biosamp=h3k27ac_meta.biosamp.tolist()),
         # expand(config['ccre']['bed'],
         #        species=species,
         #        ccre_type=ccre_types),
@@ -128,13 +137,13 @@ rule procap_format:
 ####################### H3K4me3 download / proc ################################
 ################################################################################
 def get_h3k4me3_encid(wc, df):
-    biosamp = wc.pc_biosamp
+    biosamp = wc.h3k4me3_biosamp
     temp = df.loc[(df.biosamp==biosamp)]
     return temp['File accession'].values[0]
 
 use rule dl_encid_bed as dl_encid_h3k4me3_bed with:
     params:
-        encid = lambda wc:get_h3k4me3_encid(wc, h3_meta)
+        encid = lambda wc:get_h3k4me3_encid(wc, h3k4me3_meta)
     output:
         bed = config['h3k4me3']['bed_gz']
 
@@ -143,6 +152,26 @@ use rule gunzip as gunzip_h3k4me3 with:
         gz = config['h3k4me3']['bed_gz']
     output:
         out = config['h3k4me3']['bed']
+
+################################################################################
+######################## H3K27ac download / proc ###############################
+################################################################################
+def get_h3k27ac_encid(wc, df):
+    biosamp = wc.h3k27ac_biosamp
+    temp = df.loc[(df.biosamp==biosamp)]
+    return temp['File accession'].values[0]
+
+use rule dl_encid_bed as dl_encid_h3k27ac_bed with:
+    params:
+        encid = lambda wc:get_h3k27ac_encid(wc, h3k27ac_meta)
+    output:
+        bed = config['h3k27ac']['bed_gz']
+
+use rule gunzip as gunzip_h3k27ac with:
+    input:
+        gz = config['h3k27ac']['bed_gz']
+    output:
+        out = config['h3k27ac']['bed']
 
 ################################################################################
 ####################### LR TSS download / proc #################################

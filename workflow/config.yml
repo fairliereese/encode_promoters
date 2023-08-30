@@ -22,5 +22,10 @@ lr:
 
 h3k4me3:
   encode_meta: data/human/h3k4me3_chip/encode_metadata.tsv
-  bed_gz: data/human/h3k4me3_chip/{h3_biosamp}.bed.gz
-  bed: data/human/h3k4me3_chip/{h3_biosamp}.bed
+  bed_gz: data/human/h3k4me3_chip/{h3k4me3_biosamp}_{h3k4me3_rep}.bed.gz
+  bed: data/human/h3k4me3_chip/{h3k4me3_biosamp}_{h3k4me3_rep}.bed
+
+h3k27ac:
+  encode_meta: data/human/h3k27ac_chip/encode_metadata.tsv
+  bed_gz: data/human/h3k27ac_chip/{h3k27ac_biosamp}_{h3k27ac_rep}.bed.gz
+  bed: data/human/h3k27ac_chip/{h3k27ac_biosamp}_{h3k27ac_rep}.bed
