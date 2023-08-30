@@ -29,3 +29,8 @@ h3k27ac:
   encode_meta: data/human/h3k27ac_chip/encode_metadata.tsv
   bed_gz: data/human/h3k27ac_chip/{h3k27ac_biosamp}_{h3k27ac_rep}.bed.gz
   bed: data/human/h3k27ac_chip/{h3k27ac_biosamp}_{h3k27ac_rep}.bed
+
+pol2:
+  encode_meta: data/human/pol2_chip/encode_metadata.tsv
+  bed_gz: data/human/pol2_chip/{pol2_biosamp}_{pol2_rep}.bed.gz
+  bed: data/human/h3k27ac_chip/{pol2_biosamp}_{pol2_rep}.bed

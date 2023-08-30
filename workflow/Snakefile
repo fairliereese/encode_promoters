@@ -31,6 +31,10 @@ h3k4me3_meta = process_encode_metadata(config['h3k4me3']['encode_meta'])
 # h3k27ac chip stuff
 h3k27ac_meta = process_encode_metadata(config['h3k27ac']['encode_meta'])
 
+# pol2 chip stuff
+pol2_meta = process_encode_metadata(config['pol2']['encode_meta'])
+
+
 
 wildcard_constraints:
     ccre_type='|'.join([re.escape(x) for x in ccre_types]),
@@ -43,6 +47,8 @@ wildcard_constraints:
     h3k4me3_rep='|'.join([re.escape(x) for x in h3k4me3_meta.biorep.astype(str).tolist()]),
     h3k27ac_biosamp='|'.join([re.escape(x) for x in h3k27ac_meta.biosamp.astype(str).tolist()]),
     h3k27ac_rep='|'.join([re.escape(x) for x in h3k27ac_meta.biorep.astype(str).tolist()]),
+    pol2_biosamp='|'.join([re.escape(x) for x in pol2_meta.biosamp.astype(str).tolist()]),
+    pol2_rep='|'.join([re.escape(x) for x in pol2_meta.biorep.astype(str).tolist()]),
 
 rule all:
     input:
@@ -57,6 +63,10 @@ rule all:
                zip,
                h3k27ac_biosamp=h3k27ac_meta.biosamp.tolist(),
                h3k27ac_rep=h3k27ac_meta.biorep.tolist()),
+        expand(config['pol2']['bed'],
+               zip,
+               pol2_biosamp=pol2_meta.biosamp.tolist(),
+               pol2_rep=pol2_meta.biorep.tolist()),
         # expand(config['ccre']['bed'],
         #        species=species,
         #        ccre_type=ccre_types),
@@ -178,6 +188,28 @@ use rule gunzip as gunzip_h3k27ac with:
         gz = config['h3k27ac']['bed_gz']
     output:
         out = config['h3k27ac']['bed']
+
+################################################################################
+######################### Pol II download / proc ###############################
+################################################################################
+def get_pol2_encid(wc, df):
+    biosamp = wc.pol2_biosamp
+    rep = int(wc.pol2_rep)
+    temp = df.loc[(df.biosamp==biosamp)&\
+                  (df.biorep==rep)]
+    return temp['File accession'].values[0]
+
+use rule dl_encid_bed as dl_encid_pol2_bed with:
+    params:
+        encid = lambda wc:get_pol2_encid(wc, pol2_meta)
+    output:
+        bed = config['pol2']['bed_gz']
+
+use rule gunzip as gunzip_pol2 with:
+    input:
+        gz = config['pol2']['bed_gz']
+    output:
+        out = config['pol2']['bed']
 
 ################################################################################
 ####################### LR TSS download / proc #################################
