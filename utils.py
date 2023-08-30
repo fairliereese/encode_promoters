@@ -1,6 +1,7 @@
 import pandas as pd
 import pyranges as pr
 import cerberus
+import numpy as np
 
 def format_metadata_col(df, col, new_col):
     df[new_col] = df[col].str.lower()
@@ -147,7 +148,7 @@ def get_lr_tss(ca_h5,
     tss = tss.loc[tss.Name.isin(tss_ids)]
     tss = pr.PyRanges(tss)
     tss.to_bed(ofile)
-    
+
 def intersect_ccre(ccre_file,
                    bed_files,
                    ofile):

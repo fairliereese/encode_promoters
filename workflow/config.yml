@@ -2,7 +2,7 @@ ccre:
   bed_gz: data/{species}/ccre/{ccre_type}.bed.gz
   bed: data/{species}/ccre/{ccre_type}.bed
 
-  intersect: data/{species}/ccre/intersect/{ccre_type}_.bed
+  intersect: data/{species}/ccre/intersect/{ccre_type}.bed
 
 procap:
   encode_meta: data/human/procap//encode_metadata.tsv
@@ -19,3 +19,8 @@ lr:
   det_mat: data/{species}/lr/tss_det_matrix.tsv
   bed: data/{species}/lr/{lr_biosamp}_{lr_rep}.bed
   bed_format: data/{species}/lr/{lr_biosamp}_{lr_rep}_formatted.bed
+
+h3k4me3:
+  encode_meta: data/human/h3k4me3_chip/encode_metadata.tsv
+  bed_gz: data/human/h3k4me3_chip/{h3_biosamp}.bed.gz
+  bed: data/human/h3k4me3_chip/{h3_biosamp}.bed
