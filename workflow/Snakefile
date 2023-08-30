@@ -142,7 +142,7 @@ def get_h3k4me3_encid(wc, df):
     biosamp = wc.h3k4me3_biosamp
     rep = int(wc.h3k4me3_rep)
     temp = df.loc[(df.biosamp==biosamp)&\
-                  (df.biorep==rep)
+                  (df.biorep==rep)]
     return temp['File accession'].values[0]
 
 use rule dl_encid_bed as dl_encid_h3k4me3_bed with:
@@ -164,7 +164,7 @@ def get_h3k27ac_encid(wc, df):
     biosamp = wc.h3k27ac_biosamp
     rep = int(wc.h3k27ac_rep)
     temp = df.loc[(df.biosamp==biosamp)&\
-                  (df.biorep==rep)
+                  (df.biorep==rep)]
     return temp['File accession'].values[0]
 
 use rule dl_encid_bed as dl_encid_h3k27ac_bed with:

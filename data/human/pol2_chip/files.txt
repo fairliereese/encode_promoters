@@ -1,0 +1,13 @@
+"https://www.encodeproject.org/metadata/?status=released&files.analyses.title=ENCODE4+v1.6.1+GRCh38&files.output_type=IDR+thresholded+peaks&files.file_type=bed+narrowPeak&files.file_format=bed&files.status=released&type=Experiment&cart=%2Fcarts%2F194dafdf-24b7-4a50-a7b7-c3d5f2daae6e%2F&files.assembly=GRCh38"
+https://www.encodeproject.org/files/ENCFF199ATL/@@download/ENCFF199ATL.bed.gz
+https://www.encodeproject.org/files/ENCFF159PYD/@@download/ENCFF159PYD.bed.gz
+https://www.encodeproject.org/files/ENCFF127VAA/@@download/ENCFF127VAA.bed.gz
+https://www.encodeproject.org/files/ENCFF039SCT/@@download/ENCFF039SCT.bed.gz
+https://www.encodeproject.org/files/ENCFF335YOU/@@download/ENCFF335YOU.bed.gz
+https://www.encodeproject.org/files/ENCFF229KAY/@@download/ENCFF229KAY.bed.gz
+https://www.encodeproject.org/files/ENCFF023LGC/@@download/ENCFF023LGC.bed.gz
+https://www.encodeproject.org/files/ENCFF725CIP/@@download/ENCFF725CIP.bed.gz
+https://www.encodeproject.org/files/ENCFF535TAL/@@download/ENCFF535TAL.bed.gz
+https://www.encodeproject.org/files/ENCFF634JRD/@@download/ENCFF634JRD.bed.gz
+https://www.encodeproject.org/files/ENCFF990OGO/@@download/ENCFF990OGO.bed.gz
+https://www.encodeproject.org/files/ENCFF696ARH/@@download/ENCFF696ARH.bed.gz

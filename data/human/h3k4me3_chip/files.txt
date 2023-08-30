@@ -1,0 +1,17 @@
+"https://www.encodeproject.org/metadata/?files.analyses.title=ENCODE4+v1.5.1+GRCh38&files.analyses.title=ENCODE4+v1.6.1+GRCh38&files.output_type=pseudoreplicated+peaks&files.file_type=bed+narrowPeak&files.file_format=bed&type=Experiment&cart=%2Fcarts%2Fb8869cc4-4eea-44d5-97f5-fda9881e9334%2F&files.assembly=GRCh38&files.analyses.status=released&files.preferred_default=true"
+https://www.encodeproject.org/files/ENCFF347EMU/@@download/ENCFF347EMU.bed.gz
+https://www.encodeproject.org/files/ENCFF689QIJ/@@download/ENCFF689QIJ.bed.gz
+https://www.encodeproject.org/files/ENCFF885FQN/@@download/ENCFF885FQN.bed.gz
+https://www.encodeproject.org/files/ENCFF550OWZ/@@download/ENCFF550OWZ.bed.gz
+https://www.encodeproject.org/files/ENCFF407OQB/@@download/ENCFF407OQB.bed.gz
+https://www.encodeproject.org/files/ENCFF392YEW/@@download/ENCFF392YEW.bed.gz
+https://www.encodeproject.org/files/ENCFF637QOV/@@download/ENCFF637QOV.bed.gz
+https://www.encodeproject.org/files/ENCFF497MQY/@@download/ENCFF497MQY.bed.gz
+https://www.encodeproject.org/files/ENCFF587DVA/@@download/ENCFF587DVA.bed.gz
+https://www.encodeproject.org/files/ENCFF711MPL/@@download/ENCFF711MPL.bed.gz
+https://www.encodeproject.org/files/ENCFF268RXB/@@download/ENCFF268RXB.bed.gz
+https://www.encodeproject.org/files/ENCFF375RGR/@@download/ENCFF375RGR.bed.gz
+https://www.encodeproject.org/files/ENCFF524QAC/@@download/ENCFF524QAC.bed.gz
+https://www.encodeproject.org/files/ENCFF272QER/@@download/ENCFF272QER.bed.gz
+https://www.encodeproject.org/files/ENCFF982DUT/@@download/ENCFF982DUT.bed.gz
+https://www.encodeproject.org/files/ENCFF998CEU/@@download/ENCFF998CEU.bed.gz
