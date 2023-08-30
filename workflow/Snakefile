@@ -55,18 +55,18 @@ rule all:
         expand(config['ccre']['intersect'],
                species=species,
                ccre_type=ccre_types),
-        expand(config['h3k4me3']['bed'],
+        expand(config['chip']['bed'],
                zip,
-               h3k4me3_biosamp=h3k4me3_meta.biosamp.tolist(),
-               h3k4me3_rep=h3k4me3_meta.biorep.tolist()),
-        expand(config['h3k27ac']['bed'],
+               biosamp=h3k4me3_meta.biosamp.tolist(),
+               rep=h3k4me3_meta.biorep.tolist()),
+        expand(config['chip']['bed'],
                zip,
-               h3k27ac_biosamp=h3k27ac_meta.biosamp.tolist(),
-               h3k27ac_rep=h3k27ac_meta.biorep.tolist()),
-        expand(config['pol2']['bed'],
+               biosamp=h3k27ac_meta.biosamp.tolist(),
+               rep=h3k27ac_meta.biorep.tolist()),
+        expand(config['chip']['bed'],
                zip,
-               pol2_biosamp=pol2_meta.biosamp.tolist(),
-               pol2_rep=pol2_meta.biorep.tolist()),
+               biosamp=pol2_meta.biosamp.tolist(),
+               rep=pol2_meta.biorep.tolist()),
         # expand(config['ccre']['bed'],
         #        species=species,
         #        ccre_type=ccre_types),
@@ -146,70 +146,98 @@ rule procap_format:
         # pr.PyRanges(df).to_bed(output.bed)
 
 ################################################################################
-####################### H3K4me3 download / proc ################################
+######################## ChIP download / proc ##################################
 ################################################################################
-def get_h3k4me3_encid(wc, df):
-    biosamp = wc.h3k4me3_biosamp
-    rep = int(wc.h3k4me3_rep)
+def get_chip_encid(wc):
+    if wc.chip_target == 'h3k4me3':
+        df = h3k4me3_meta
+    elif wc.chip_target == 'h3k27ac':
+        df = h3k27ac_meta
+    elif wc.chip_target == 'pol2':
+        df = pol2_meta
+    biosamp = wc.biosamp
+    rep = int(wc.rep)
     temp = df.loc[(df.biosamp==biosamp)&\
                   (df.biorep==rep)]
     return temp['File accession'].values[0]
 
-use rule dl_encid_bed as dl_encid_h3k4me3_bed with:
+use rule dl_encid_bed as dl_encid_chip_bed with:
     params:
-        encid = lambda wc:get_h3k4me3_encid(wc, h3k4me3_meta)
+        encid = lambda wc:get_chip_encid(wc)
     output:
-        bed = temporary(config['h3k4me3']['bed_gz'])
+        bed = temporary(config['chip']['bed_gz'])
 
-use rule gunzip as gunzip_h3k4me3 with:
+use rule gunzip as gunzip_chip with:
     input:
-        gz = config['h3k4me3']['bed_gz']
+        gz = config['chip']['bed_gz']
     output:
-        out = config['h3k4me3']['bed']
+        out = config['chip']['bed']
 
-################################################################################
-######################## H3K27ac download / proc ###############################
-################################################################################
-def get_h3k27ac_encid(wc, df):
-    biosamp = wc.h3k27ac_biosamp
-    rep = int(wc.h3k27ac_rep)
-    temp = df.loc[(df.biosamp==biosamp)&\
-                  (df.biorep==rep)]
-    return temp['File accession'].values[0]
-
-use rule dl_encid_bed as dl_encid_h3k27ac_bed with:
-    params:
-        encid = lambda wc:get_h3k27ac_encid(wc, h3k27ac_meta)
-    output:
-        bed = temporary(config['h3k27ac']['bed_gz'])
-
-use rule gunzip as gunzip_h3k27ac with:
-    input:
-        gz = config['h3k27ac']['bed_gz']
-    output:
-        out = config['h3k27ac']['bed']
-
-################################################################################
-######################### Pol II download / proc ###############################
-################################################################################
-def get_pol2_encid(wc, df):
-    biosamp = wc.pol2_biosamp
-    rep = int(wc.pol2_rep)
-    temp = df.loc[(df.biosamp==biosamp)&\
-                  (df.biorep==rep)]
-    return temp['File accession'].values[0]
-
-use rule dl_encid_bed as dl_encid_pol2_bed with:
-    params:
-        encid = lambda wc:get_pol2_encid(wc, pol2_meta)
-    output:
-        bed = temporary(config['pol2']['bed_gz'])
-
-use rule gunzip as gunzip_pol2 with:
-    input:
-        gz = config['pol2']['bed_gz']
-    output:
-        out = config['pol2']['bed']
+# ################################################################################
+# ####################### H3K4me3 download / proc ################################
+# ################################################################################
+# def get_h3k4me3_encid(wc, df):
+#     biosamp = wc.h3k4me3_biosamp
+#     rep = int(wc.h3k4me3_rep)
+#     temp = df.loc[(df.biosamp==biosamp)&\
+#                   (df.biorep==rep)]
+#     return temp['File accession'].values[0]
+#
+# use rule dl_encid_bed as dl_encid_h3k4me3_bed with:
+#     params:
+#         encid = lambda wc:get_h3k4me3_encid(wc, h3k4me3_meta)
+#     output:
+#         bed = temporary(config['h3k4me3']['bed_gz'])
+#
+# use rule gunzip as gunzip_h3k4me3 with:
+#     input:
+#         gz = config['h3k4me3']['bed_gz']
+#     output:
+#         out = config['h3k4me3']['bed']
+#
+# ################################################################################
+# ######################## H3K27ac download / proc ###############################
+# ################################################################################
+# def get_h3k27ac_encid(wc, df):
+#     biosamp = wc.h3k27ac_biosamp
+#     rep = int(wc.h3k27ac_rep)
+#     temp = df.loc[(df.biosamp==biosamp)&\
+#                   (df.biorep==rep)]
+#     return temp['File accession'].values[0]
+#
+# use rule dl_encid_bed as dl_encid_h3k27ac_bed with:
+#     params:
+#         encid = lambda wc:get_h3k27ac_encid(wc, h3k27ac_meta)
+#     output:
+#         bed = temporary(config['h3k27ac']['bed_gz'])
+#
+# use rule gunzip as gunzip_h3k27ac with:
+#     input:
+#         gz = config['h3k27ac']['bed_gz']
+#     output:
+#         out = config['h3k27ac']['bed']
+#
+# ################################################################################
+# ######################### Pol II download / proc ###############################
+# ################################################################################
+# def get_pol2_encid(wc, df):
+#     biosamp = wc.biosamp
+#     rep = int(wc.rep)
+#     temp = df.loc[(df.biosamp==biosamp)&\
+#                   (df.biorep==rep)]
+#     return temp['File accession'].values[0]
+#
+# use rule dl_encid_bed as dl_encid_pol2_bed with:
+#     params:
+#         encid = lambda wc:get_pol2_encid(wc, pol2_meta)
+#     output:
+#         bed = temporary(config['pol2']['bed_gz'])
+#
+# use rule gunzip as gunzip_pol2 with:
+#     input:
+#         gz = config['pol2']['bed_gz']
+#     output:
+#         out = config['pol2']['bed']
 
 ################################################################################
 ####################### LR TSS download / proc #################################

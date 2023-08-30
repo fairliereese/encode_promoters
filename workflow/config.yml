@@ -20,17 +20,23 @@ lr:
   bed: data/{species}/lr/{lr_biosamp}_{lr_rep}.bed
   bed_format: data/{species}/lr/{lr_biosamp}_{lr_rep}_formatted.bed
 
-h3k4me3:
-  encode_meta: data/human/h3k4me3_chip/encode_metadata.tsv
-  bed_gz: data/human/h3k4me3_chip/{h3k4me3_biosamp}_{h3k4me3_rep}.bed.gz
-  bed: data/human/h3k4me3_chip/{h3k4me3_biosamp}_{h3k4me3_rep}.bed
 
-h3k27ac:
-  encode_meta: data/human/h3k27ac_chip/encode_metadata.tsv
-  bed_gz: data/human/h3k27ac_chip/{h3k27ac_biosamp}_{h3k27ac_rep}.bed.gz
-  bed: data/human/h3k27ac_chip/{h3k27ac_biosamp}_{h3k27ac_rep}.bed
+chip:
+  encode_meta: data/human/{chip_target}_chip/encode_metadata.tsv
+  bed_gz: data/human/{chip_target}_chip/{biosamp}_{rep}.bed.gz
+  bed: data/human/{chip_target}_chip/{biosamp}_{rep}.bed
 
-pol2:
-  encode_meta: data/human/pol2_chip/encode_metadata.tsv
-  bed_gz: data/human/pol2_chip/{pol2_biosamp}_{pol2_rep}.bed.gz
-  bed: data/human/h3k27ac_chip/{pol2_biosamp}_{pol2_rep}.bed
+# h3k4me3:
+#   encode_meta: data/human/h3k4me3_chip/encode_metadata.tsv
+#   bed_gz: data/human/h3k4me3_chip/{h3k4me3_biosamp}_{h3k4me3_rep}.bed.gz
+#   bed: data/human/h3k4me3_chip/{h3k4me3_biosamp}_{h3k4me3_rep}.bed
+#
+# h3k27ac:
+#   encode_meta: data/human/h3k27ac_chip/encode_metadata.tsv
+#   bed_gz: data/human/h3k27ac_chip/{h3k27ac_biosamp}_{h3k27ac_rep}.bed.gz
+#   bed: data/human/h3k27ac_chip/{h3k27ac_biosamp}_{h3k27ac_rep}.bed
+#
+# pol2:
+#   encode_meta: data/human/pol2_chip/encode_metadata.tsv
+#   bed_gz: data/human/pol2_chip/{pol2_biosamp}_{pol2_rep}.bed.gz
+#   bed: data/human/h3k27ac_chip/{pol2_biosamp}_{pol2_rep}.bed
