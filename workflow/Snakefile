@@ -34,7 +34,13 @@ h3k27ac_meta = process_encode_metadata(config['h3k27ac']['encode_meta'])
 # pol2 chip stuff
 pol2_meta = process_encode_metadata(config['pol2']['encode_meta'])
 
-
+# get aggregate of all possible values for the wildcards
+biosamps = h3k4me3_meta.biosamp.tolist()+\
+           h3k27ac_meta.biosamp.tolist()+\
+           pol2_meta.biosamp.tolist()
+reps = h3k4me3_meta.biorep.astype(str).tolist()+\
+       h3k27ac_meta.biorep.astype(str).tolist()+\
+       pol2_meta.biorep.astype(str).tolist()
 
 wildcard_constraints:
     ccre_type='|'.join([re.escape(x) for x in ccre_types]),
@@ -43,12 +49,9 @@ wildcard_constraints:
     pc_output='|'.join([re.escape(x) for x in procap_meta.output.tolist()]),
     lr_biosamp='|'.join([re.escape(x) for x in lr_meta.biosamp.tolist()]),
     lr_rep='|'.join([re.escape(x) for x in lr_meta.biorep.astype(str).tolist()]),
-    h3k4me3_biosamp='|'.join([re.escape(x) for x in h3k4me3_meta.biosamp.astype(str).tolist()]),
-    h3k4me3_rep='|'.join([re.escape(x) for x in h3k4me3_meta.biorep.astype(str).tolist()]),
-    h3k27ac_biosamp='|'.join([re.escape(x) for x in h3k27ac_meta.biosamp.astype(str).tolist()]),
-    h3k27ac_rep='|'.join([re.escape(x) for x in h3k27ac_meta.biorep.astype(str).tolist()]),
-    pol2_biosamp='|'.join([re.escape(x) for x in pol2_meta.biosamp.astype(str).tolist()]),
-    pol2_rep='|'.join([re.escape(x) for x in pol2_meta.biorep.astype(str).tolist()]),
+    biosamp='|'.join([re.escape(x) for x in biosamps]),
+    rep='|'.join([re.escape(x) for x in reps]),
+
 
 rule all:
     input:
