@@ -118,13 +118,13 @@ use rule dl_encid_bed as dl_encid_procap_bed with:
     params:
         encid = lambda wc:get_procap_encid(wc, procap_meta)
     output:
-        bed = config['procap']['bed_gz']
+        bed = temporary(config['procap']['bed_gz'])
 
 use rule gunzip as gunzip_procap with:
     input:
         gz = config['procap']['bed_gz']
     output:
-        out = config['procap']['bed']
+        out = temporary(config['procap']['bed'])
 
 rule procap_format:
     input:
@@ -159,7 +159,7 @@ use rule dl_encid_bed as dl_encid_h3k4me3_bed with:
     params:
         encid = lambda wc:get_h3k4me3_encid(wc, h3k4me3_meta)
     output:
-        bed = config['h3k4me3']['bed_gz']
+        bed = temporary(config['h3k4me3']['bed_gz'])
 
 use rule gunzip as gunzip_h3k4me3 with:
     input:
@@ -181,7 +181,7 @@ use rule dl_encid_bed as dl_encid_h3k27ac_bed with:
     params:
         encid = lambda wc:get_h3k27ac_encid(wc, h3k27ac_meta)
     output:
-        bed = config['h3k27ac']['bed_gz']
+        bed = temporary(config['h3k27ac']['bed_gz'])
 
 use rule gunzip as gunzip_h3k27ac with:
     input:
@@ -203,7 +203,7 @@ use rule dl_encid_bed as dl_encid_pol2_bed with:
     params:
         encid = lambda wc:get_pol2_encid(wc, pol2_meta)
     output:
-        bed = config['pol2']['bed_gz']
+        bed = temporary(config['pol2']['bed_gz'])
 
 use rule gunzip as gunzip_pol2 with:
     input:
