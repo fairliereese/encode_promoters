@@ -64,7 +64,7 @@ rule all:
                zip,
                biosamp=h3k4me3_meta.biosamp.tolist(),
                rep=h3k4me3_meta.biorep.tolist(),
-               chip_target='h3k4me3'),.
+               chip_target='h3k4me3'),
         expand(config['chip']['bed'],
                zip,
                biosamp=h3k27ac_meta.biosamp.tolist(),
