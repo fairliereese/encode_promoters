@@ -147,3 +147,39 @@ def get_lr_tss(ca_h5,
     tss = tss.loc[tss.Name.isin(tss_ids)]
     tss = pr.PyRanges(tss)
     tss.to_bed(ofile)
+    
+def intersect_ccre(ccre_file,
+                   bed_files,
+                   ofile):
+    ccre = pr.read_bed(ccre_file)
+
+    # get concatenation of all bed files
+    df = pd.DataFrame()
+    for f in bed_files:
+        temp = pd.read_csv(f, sep='\t')
+        df = pd.concat([df, temp], axis=0)
+
+    # merge w/ ccre data
+    df = pr.PyRanges(df)
+
+    ccre = ccre.join(df,
+         how='left',
+         slack=0,
+         suffix='_other').df
+
+
+    # get support for each ccre by each assay
+    temp = ccre[['Name', 'assay']].drop_duplicates()
+    temp = temp.sort_values(by='assay', ascending=True)
+    temp = temp.loc[temp.assay!='-1']
+    assay_list = [temp.assay.unique()]+[np.nan]
+    temp = temp.groupby('Name').agg({'assay':','.join}, axis=0).reset_index()
+    temp['assay'] = temp['assay']+',ccre'
+
+    # now make table w/ support for each ccre
+    ccre = pr.read_bed(ccre_file).df
+    ccre = ccre.merge(temp, how='left', on='Name')
+    ccre.loc[ccre.assay.isnull(), 'assay'] = 'ccre'
+
+    # and save
+    ccre.to_csv(ofile, sep='\t', index=False)

@@ -26,6 +26,7 @@ lr_df = pd.read_csv('workflow/lr_config.tsv', sep='\t')
 lr_meta = process_encode_metadata(expand(config['lr']['encode_meta'], species='human')[0])
 
 wildcard_constraints:
+    ccre_type='|'.join([re.escape(x) for x in ccre_types]),
     pc_biosamp='|'.join([re.escape(x) for x in procap_meta.biosamp.tolist()]),
     pc_rep='|'.join([re.escape(x) for x in procap_meta.biorep.astype(str).tolist()]),
     pc_output='|'.join([re.escape(x) for x in procap_meta.output.tolist()]),
@@ -34,7 +35,7 @@ wildcard_constraints:
 
 rule all:
     input:
-        expand(config['ccre']['bed'],
+        expand(config['ccre']['intersect'],
                species=species,
                ccre_type=ccre_types),
         # expand(config['ccre']['bed'],
