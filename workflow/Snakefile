@@ -26,13 +26,16 @@ lr_df = pd.read_csv('workflow/lr_config.tsv', sep='\t')
 lr_meta = process_encode_metadata(expand(config['lr']['encode_meta'], species='human')[0])
 
 # h3k4me3 chip stuff
-h3k4me3_meta = process_encode_metadata(config['h3k4me3']['encode_meta'])
+h3k4me3_meta = process_encode_metadata(expand(config['h3k4me3']['encode_meta'],
+                                       chip_target='h3k4me3')[0])
 
 # h3k27ac chip stuff
-h3k27ac_meta = process_encode_metadata(config['h3k27ac']['encode_meta'])
+h3k27ac_meta = process_encode_metadata(expand(config['h3k27ac']['encode_meta'],
+                                       chip_target='h3k27ac')[0])
 
 # pol2 chip stuff
-pol2_meta = process_encode_metadata(config['pol2']['encode_meta'])
+pol2_meta = process_encode_metadata(expand(config['pol2']['encode_meta'],
+                                    chip_target='pol2')[0])
 
 # get aggregate of all possible values for the wildcards
 biosamps = h3k4me3_meta.biosamp.tolist()+\
@@ -51,7 +54,6 @@ wildcard_constraints:
     lr_rep='|'.join([re.escape(x) for x in lr_meta.biorep.astype(str).tolist()]),
     biosamp='|'.join([re.escape(x) for x in biosamps]),
     rep='|'.join([re.escape(x) for x in reps]),
-
 
 rule all:
     input:
