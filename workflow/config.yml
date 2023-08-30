@@ -2,7 +2,7 @@ ccre:
   bed_gz: data/{species}/ccre/{ccre_type}.bed.gz
   bed: data/{species}/ccre/{ccre_type}.bed
 
-  intersect_bed: data/{species}/ccre/intersect/{ccre_type}.bed
+  intersect: data/{species}/ccre/intersect/{ccre_type}.bed
 
 procap:
   encode_meta: data/human/procap//encode_metadata.tsv
