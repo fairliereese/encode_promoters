@@ -51,10 +51,12 @@ rule all:
                ccre_type=ccre_types),
         expand(config['h3k4me3']['bed'],
                zip,
-               h3k4me3_biosamp=h3k4me3_meta.biosamp.tolist()),
+               h3k4me3_biosamp=h3k4me3_meta.biosamp.tolist(),
+               h3k4me3_rep=h3k4me3_meta.biorep.tolist()),
         expand(config['h3k27ac']['bed'],
                zip,
-               h3k27ac_biosamp=h3k27ac_meta.biosamp.tolist()),
+               h3k27ac_biosamp=h3k27ac_meta.biosamp.tolist(),
+               h3k27ac_rep=h3k27ac_meta.biorep.tolist()),
         # expand(config['ccre']['bed'],
         #        species=species,
         #        ccre_type=ccre_types),
@@ -138,7 +140,9 @@ rule procap_format:
 ################################################################################
 def get_h3k4me3_encid(wc, df):
     biosamp = wc.h3k4me3_biosamp
-    temp = df.loc[(df.biosamp==biosamp)]
+    rep = int(wc.h3k4me3_rep)
+    temp = df.loc[(df.biosamp==biosamp)&\
+                  (df.biorep==rep)
     return temp['File accession'].values[0]
 
 use rule dl_encid_bed as dl_encid_h3k4me3_bed with:
@@ -158,7 +162,9 @@ use rule gunzip as gunzip_h3k4me3 with:
 ################################################################################
 def get_h3k27ac_encid(wc, df):
     biosamp = wc.h3k27ac_biosamp
-    temp = df.loc[(df.biosamp==biosamp)]
+    rep = int(wc.h3k27ac_rep)
+    temp = df.loc[(df.biosamp==biosamp)&\
+                  (df.biorep==rep)
     return temp['File accession'].values[0]
 
 use rule dl_encid_bed as dl_encid_h3k27ac_bed with:
