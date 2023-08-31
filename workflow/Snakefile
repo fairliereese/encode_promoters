@@ -78,9 +78,9 @@ rule all:
                rep=pol2_meta.biorep.tolist(),
                allow_missing=True),
                chip_target='pol2'),
-        # expand(config['ccre']['bed'],
-        #        species=species,
-        #        ccre_type=ccre_types),
+        expand(config['ccre']['bed_format'],
+               species=species,
+               ccre_type=ccre_types),
         # expand(config['procap']['bed_format'],
         #        zip,
         #        pc_biosamp=procap_meta.biosamp.tolist(),
@@ -112,6 +112,21 @@ use rule gunzip as gunzip_ccre with:
         gz = config['ccre']['bed_gz']
     output:
         out = config['ccre']['bed']
+
+rule ccre_format:
+    input:
+        bed = config['ccre']['bed']
+    resources:
+        mem_gb = 10,
+        threads = 1
+    output:
+        bed = config['ccre']['bed_format']
+    run:
+        df = pd.read_csv(input.bed, sep='\t',
+                         header=None,
+                         names=['Chromosome', 'Start','End'], usecols=[0,1,2])
+        df['assay'] = wildcards.ccre_type
+        df.to_csv(output.bed, index=False, sep='\t')
 
 ################################################################################
 ########################## ProCap download #####################################
