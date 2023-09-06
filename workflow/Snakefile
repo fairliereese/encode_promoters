@@ -111,7 +111,7 @@ use rule gunzip as gunzip_ccre with:
     input:
         gz = config['ccre']['bed_gz']
     output:
-        out = config['ccre']['bed']
+        out = temporary(config['ccre']['bed'])
 
 rule ccre_format:
     input:
@@ -345,6 +345,7 @@ rule lr_format:
        df['biosample'] = wildcards.lr_biosamp
        df['rep'] = wildcards.lr_rep
        df['output'] = np.nan
+       df = df.drop_duplicates()
        df.to_csv(output.bed, index=False, sep='\t')
 
 ################################################################################

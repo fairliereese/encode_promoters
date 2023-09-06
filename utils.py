@@ -168,7 +168,6 @@ def intersect_ccre(ccre_file,
          slack=0,
          suffix='_other').df
 
-
     # get support for each ccre by each assay
     temp = ccre[['Name', 'assay']].drop_duplicates()
     temp = temp.sort_values(by='assay', ascending=True)
