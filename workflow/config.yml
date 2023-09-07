@@ -30,6 +30,14 @@ chip:
   bed_gz: data/human/{chip_target}_chip/{biosamp}_{rep}.bed.gz
   bed: data/human/{chip_target}_chip/{biosamp}_{rep}.bed
 
+bru_uv:
+  encode_meta: data/human/bru_uv/encode_metadata.tsv
+  bed_gz: data/human/bru_uv/{biosamp}_{rep}_{pc_output}.bed.gz
+  bed: data/human/bru_uv/{biosamp}_{rep}.bed
+  bed_format: data/human/bru_uv/{biosamp}_{rep}_formatted.bed
+
+
+
 # h3k4me3:
 #   encode_meta: data/human/h3k4me3_chip/encode_metadata.tsv
 #   bed_gz: data/human/h3k4me3_chip/{h3k4me3_biosamp}_{h3k4me3_rep}.bed.gz

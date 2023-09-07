@@ -25,6 +25,9 @@ procap_meta = process_encode_metadata(config['procap']['encode_meta'])
 lr_df = pd.read_csv('workflow/lr_config.tsv', sep='\t')
 lr_meta = process_encode_metadata(expand(config['lr']['encode_meta'], species='human')[0])
 
+# bru uv stuff
+bru_meta = process_encode_meta(config['bru_uv']['encode_meta'])
+
 # h3k4me3 chip stuff
 h3k4me3_meta = process_encode_metadata(expand(config['chip']['encode_meta'],
                                        chip_target='h3k4me3')[0])
@@ -40,10 +43,12 @@ pol2_meta = process_encode_metadata(expand(config['chip']['encode_meta'],
 # get aggregate of all possible values for the wildcards
 biosamps = h3k4me3_meta.biosamp.tolist()+\
            h3k27ac_meta.biosamp.tolist()+\
-           pol2_meta.biosamp.tolist()
+           pol2_meta.biosamp.tolist()+\
+           bru_meta.biosamp.tolist()
 reps = h3k4me3_meta.biorep.astype(str).tolist()+\
        h3k27ac_meta.biorep.astype(str).tolist()+\
-       pol2_meta.biorep.astype(str).tolist()
+       pol2_meta.biorep.astype(str).tolist()+\
+       bru_meta.biorep.astype(str).tolist()
 
 wildcard_constraints:
     ccre_type='|'.join([re.escape(x) for x in ccre_types]),
@@ -81,6 +86,10 @@ rule all:
         expand(config['ccre']['bed_format'],
                species=species,
                ccre_type=ccre_types),
+        expand(config['bru_uv']['bed'],
+               species='human',
+               biosamp=bru_meta.biosamp.tolist(),
+               rep=bru_meta.rep.tolist())
         # expand(config['procap']['bed_format'],
         #        zip,
         #        pc_biosamp=procap_meta.biosamp.tolist(),
@@ -198,6 +207,31 @@ use rule gunzip as gunzip_chip with:
         gz = config['chip']['bed_gz']
     output:
         out = config['chip']['bed']
+
+################################################################################
+########################## Bru UV Download #####################################
+################################################################################
+def get_bru_encid(wc):
+    df = bru_meta.copy(deep=True)
+    biosamp = wc.biosamp
+    rep = int(wc.rep)
+    temp = df.loc[(df.biosamp==biosamp)&\
+                  (df.biorep==rep)]
+    return temp['File accession'].values[0]
+
+use rule dl_encid_bed as dl_encid_bru_bed with:
+    params:
+        encid = lambda wc:get_bru_encid(wc)
+    output:
+        bed = temporary(config['bru_uv']['bed_gz'])
+
+use rule gunzip as gunzip_bru with:
+    input:
+        gz = config['bru_uv']['bed_gz']
+    output:
+        # out = temporary(config['bru_uv']['bed'])
+        out = config['bru_uv']['bed']
+
 
 # ################################################################################
 # ####################### H3K4me3 download / proc ################################
