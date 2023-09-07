@@ -26,7 +26,7 @@ lr_df = pd.read_csv('workflow/lr_config.tsv', sep='\t')
 lr_meta = process_encode_metadata(expand(config['lr']['encode_meta'], species='human')[0])
 
 # bru uv stuff
-bru_meta = process_encode_meta(config['bru_uv']['encode_meta'])
+bru_meta = process_encode_metadata(config['bru_uv']['encode_meta'])
 
 # h3k4me3 chip stuff
 h3k4me3_meta = process_encode_metadata(expand(config['chip']['encode_meta'],
