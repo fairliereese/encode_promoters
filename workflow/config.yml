@@ -1,3 +1,6 @@
+ref:
+  gtf: ref/{species}/annot.gtf
+
 ccre:
   bed_gz: data/{species}/ccre/{ccre_type}.bed.gz
   bed: data/{species}/ccre/{ccre_type}.bed
