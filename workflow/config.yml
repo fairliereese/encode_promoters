@@ -9,7 +9,7 @@ ccre:
   intersect: data/{species}/ccre/intersect/{ccre_type}.bed
 
 procap:
-  encode_meta: data/human/procap//encode_metadata.tsv
+  encode_meta: data/human/procap/encode_metadata.tsv
   bed_gz: data/human/procap/{pc_biosamp}_{pc_rep}_{pc_output}.bed.gz
   bed: data/human/procap/{pc_biosamp}_{pc_rep}_{pc_output}.bed
   bed_format: data/human/procap/{pc_biosamp}_{pc_rep}_{pc_output}_formatted.bed
@@ -32,7 +32,7 @@ chip:
 
 bru_uv:
   encode_meta: data/human/bru_uv/encode_metadata.tsv
-  bed_gz: data/human/bru_uv/{biosamp}_{rep}_{pc_output}.bed.gz
+  bed_gz: data/human/bru_uv/{biosamp}_{rep}.bed.gz
   bed: data/human/bru_uv/{biosamp}_{rep}.bed
   bed_format: data/human/bru_uv/{biosamp}_{rep}_formatted.bed
 
