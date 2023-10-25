@@ -422,8 +422,7 @@ def get_bed_files(wc):
            zip,
            lr_biosamp=temp_lr.biosamp.tolist(),
            lr_rep=temp_lr.biorep.tolist(),
-           species=temp_lr.species.tolist())
-    import pdb; pdb.set_trace()
+           species=wc.species)
     files = pc_files+lr_files
     return files
 
