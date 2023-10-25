@@ -6,7 +6,9 @@ ccre:
   bed: data/{species}/ccre/{ccre_type}.bed
   bed_format: data/{species}/ccre/{ccre_type}_formatted.bed
 
-  intersect: data/{species}/ccre/intersect/{ccre_type}.bed
+  intersect:
+      biosamp: data/{species}/ccre/intersect/{biosamp}/{ccre_type}.bed
+      union: data/{species}/ccre/intersect/union/{ccre_type}.bed
 
 procap:
   encode_meta: data/human/procap/encode_metadata.tsv

@@ -62,32 +62,38 @@ wildcard_constraints:
 
 rule all:
     input:
-        expand(config['ccre']['intersect'],
-               species=species,
-               ccre_type=ccre_types),
-        expand(expand(config['chip']['bed'],
+        expand(expand(config['ccre']['intersect']['biosamp'],
                zip,
-               biosamp=h3k4me3_meta.biosamp.tolist(),
-               rep=h3k4me3_meta.biorep.tolist(),
+               biosamp=biosamps,
                allow_missing=True),
-               chip_target='h3k4me3'),
-        expand(expand(config['chip']['bed'],
-               zip,
-               biosamp=h3k27ac_meta.biosamp.tolist(),
-               rep=h3k27ac_meta.biorep.tolist(),
-               allow_missing=True),
-               chip_target='h3k27ac'),
-        expand(expand(config['chip']['bed'],
-               zip,
-               biosamp=pol2_meta.biosamp.tolist(),
-               rep=pol2_meta.biorep.tolist(),
-               allow_missing=True),
-               chip_target='pol2'),
-        expand(config['bru_uv']['bed'],
                species='human',
-               biosamp=bru_meta.biosamp.tolist(),
-               rep=bru_meta.biorep.tolist()),
-       # expand(config['ccre']['bed_format'],
+               ccre_type=ccre_types)
+       #  expand(config['ccre']['intersect'],
+       #         species=species,
+       #         ccre_type=ccre_types),
+       #  expand(expand(config['chip']['bed'],
+       #         zip,
+       #         biosamp=h3k4me3_meta.biosamp.tolist(),
+       #         rep=h3k4me3_meta.biorep.tolist(),
+       #         allow_missing=True),
+       #         chip_target='h3k4me3'),
+       #  expand(expand(config['chip']['bed'],
+       #         zip,
+       #         biosamp=h3k27ac_meta.biosamp.tolist(),
+       #         rep=h3k27ac_meta.biorep.tolist(),
+       #         allow_missing=True),
+       #         chip_target='h3k27ac'),
+       #  expand(expand(config['chip']['bed'],
+       #         zip,
+       #         biosamp=pol2_meta.biosamp.tolist(),
+       #         rep=pol2_meta.biorep.tolist(),
+       #         allow_missing=True),
+       #         chip_target='pol2'),
+       #  expand(config['bru_uv']['bed'],
+       #         species='human',
+       #         biosamp=bru_meta.biosamp.tolist(),
+       #         rep=bru_meta.biorep.tolist()),
+       # # expand(config['ccre']['bed_format'],
        #        species=species,
        #        ccre_type=ccre_types),
         # expand(config['procap']['bed_format'],
@@ -385,22 +391,43 @@ rule lr_format:
 ################################################################################
 ########################### cCRE intersect #####################################
 ################################################################################
+
+def subset_df_on_wcs(wc, df):
+    """
+    Return a copy of the input metadata df limited to the wildcards
+    """
+    temp = df.copy(deep=True)
+    for key, item in wc.items():
+
+        # for entries that we don't have in the df, such as LAPA end mode
+        if key not in df.columns:
+            continue
+
+        # if we're given a list of possibilities
+        if type(item) == list:
+            temp = temp.loc[temp[key].isin(item)]
+        else:
+            temp = temp.loc[temp[key] == item]
+    return temp
+
 def get_bed_files(wc):
+    temp_pc = subset_df_on_wcs(wc, procap_meta)
+    temp_lr = subset_df_on_wcs(wc, lr_meta)
     pc_files = expand(config['procap']['bed_format'],
            zip,
-           pc_biosamp=procap_meta.biosamp.tolist(),
-           pc_rep=procap_meta.biorep.tolist(),
-           pc_output=procap_meta.output.tolist())
-    lr_files = expand(expand(config['lr']['bed_format'],
+           pc_biosamp=temp_pc.biosamp.tolist(),
+           pc_rep=temp_pc.biorep.tolist(),
+           pc_output=temp_pc.output.tolist())
+    lr_files = expand(config['lr']['bed_format'],
            zip,
-           lr_biosamp=lr_meta.biosamp.tolist(),
-           lr_rep=lr_meta.biorep.tolist(),
-           allow_missing=True),
-           species=wc.species)
+           lr_biosamp=temp_lr.biosamp.tolist(),
+           lr_rep=temp_lr.biorep.tolist(),
+           species=temp_lr.species.tolist())
+    import pdb; pdb.set_trace()
     files = pc_files+lr_files
     return files
 
-rule ccre_intersect:
+rule ccre_intersect_union:
     input:
         ccre = config['ccre']['bed'],
         files = lambda wc:get_bed_files(wc)
@@ -408,8 +435,23 @@ rule ccre_intersect:
         mem_gb = 32,
         threads = 4
     output:
-        out = config['ccre']['intersect']
+        out = config['ccre']['intersect']['union']
     run:
         intersect_ccre(input.ccre,
                        input.files,
                        output.out)
+
+
+rule ccre_intersect_biosample:
+   input:
+       ccre = config['ccre']['bed'],
+       files = lambda wc:get_bed_files(wc)
+   resources:
+       mem_gb = 32,
+       threads = 4
+   output:
+       out = config['ccre']['intersect']['biosamp']
+   run:
+       intersect_ccre(input.ccre,
+                      input.files,
+                      output.out)
