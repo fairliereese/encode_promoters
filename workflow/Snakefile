@@ -67,7 +67,10 @@ rule all:
                biosamp=biosamps,
                allow_missing=True),
                species='human',
-               ccre_type=ccre_types)
+               ccre_type=ccre_types),
+        expand(config['ccre']['intersect']['union'],
+              species='human',
+              ccre_type=ccre_types)
        #  expand(config['ccre']['intersect'],
        #         species=species,
        #         ccre_type=ccre_types),
